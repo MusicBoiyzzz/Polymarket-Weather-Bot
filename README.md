@@ -1,83 +1,73 @@
-# Kalshi + Polymarket Arbitrage Bot
+## Kelly Weather Trading Bot
 
-TypeScript app for **Bitcoin 15-minute up/down** markets on [Kalshi](https://kalshi.com) and [Polymarket](https://polymarket.com): Kalshi REST API, Polymarket CLOB/Gamma, dual-venue monitoring, and cross-venue arbitrage.
-
-## About Developer
-Here is Alexei who is expert of trading bot development especially EVM, Solana and Prediction market such as Polymarket, Klashi, etc.
-If you have any question for dev, contact me via telegram(https://t.me/@bitship1_1)
+High‑accuracy, Kelly‑driven **weather trading bot for Polymarket**.  
+It scans NWS forecasts, finds mispriced temperature markets, and simulates trades into `simulation.json` to help you track performance and refine your strategy.
 
 ## Prove of Work
-Please check this log to see how the bot is working [here](https://github.com/Stuboyo77/polymarket-kalshi-arbitrage-trading-bot/tree/main/logs)
 
-## Features
+https://github.com/user-attachments/assets/3d1a1f4e-9df8-4836-8147-386a91b75217
 
-- **Balance** — Kalshi portfolio balance (REST).
-- **Kalshi single order** — One limit order on the first open KXBTC15M market.
-- **Dual-venue monitor** — Best-ask prices from Kalshi + Polymarket; 15m-slot logs; optional process restart at :00/:15/:30/:45; integrated arb.
-- **Cross-venue arb** — When sum of opposite sides is in `[ARB_SUM_LOW, ARB_SUM_THRESHOLD)`, place one order on each venue (at most one per leg per market).
-- **Polymarket single order** — One limit buy for the DOWN token on the current BTC 15m market.
-
-## Setup
+### Install
 
 ```bash
-cp .env.sample .env
-# Set KALSHI_API_KEY and KALSHI_PRIVATE_KEY_PATH or KALSHI_PRIVATE_KEY_PEM
+cd weatherbot-ts
 npm install
 ```
 
-For Polymarket orders / arb Poly leg: set `POLYMARKET_PRIVATE_KEY` and `POLYMARKET_PROXY`. The monitor uses [polymarket-validator](https://www.npmjs.com/package/polymarket-validator) for config validation at startup.
+Create a `.env` file in the project root (next to `package.json`):
 
-## Scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm start` | Run dual price monitor + arb (single-instance lock, 15m log files). |
-| `npm run balance` | Fetch and print Kalshi portfolio balance. |
-| `npm run kalshi-single-order` | Place one Kalshi limit order on first open KXBTC15M market. |
-| `npm run poly-single-order` | Place one Polymarket limit buy (DOWN token). Optional: `[price] [size]`. |
-| `npm run server` | Run static server (e.g. public/). |
-| `npm run build` | Compile TypeScript to `dist/`. |
-
-## Environment
-
-**Kalshi (required):** `KALSHI_API_KEY`, `KALSHI_PRIVATE_KEY_PATH` or `KALSHI_PRIVATE_KEY_PEM`. Optional: `KALSHI_DEMO`, `KALSHI_BASE_PATH`.
-
-**Bot:** `KALSHI_BOT_SIDE` (yes/no), `KALSHI_BOT_PRICE_CENTS`, `KALSHI_BOT_CONTRACTS`, `KALSHI_BOT_MAX_MARKETS`, `KALSHI_BOT_DRY_RUN`.
-
-**Monitor:** `KALSHI_MONITOR_INTERVAL_MS` (default 200), `KALSHI_MONITOR_TICKER` (optional), `KALSHI_MONITOR_NO_RESTART` (disable 15m restart).
-
-**Arb:** `ARB_SUM_THRESHOLD` (default 0.92), `ARB_SUM_LOW` (default 0.75), `ARB_PRICE_BUFFER`, `ARB_SIZE`, `ARB_DRY_RUN`.
-
-**Polymarket:** `POLYMARKET_PRIVATE_KEY`, `POLYMARKET_PROXY`; optional: `POLYMARKET_CLOB_URL`, `POLYMARKET_CHAIN_ID`, `POLYMARKET_TICK_SIZE`, `POLYMARKET_NEG_RISK`, `POLYMARKET_CREDENTIAL_PATH`, `POLYMARKET_MIN_USD`.
-
-See `.env.sample` for all variables.
-
-## Monitor & arb
-
-`npm start` starts the dual monitor. It polls at `KALSHI_MONITOR_INTERVAL_MS`, logs to console and `logs/monitor_YYYY-MM-DD_HH-{00|15|30|45}.log`, and runs arb when the combined price (e.g. Kalshi UP + Polymarket DOWN) is in range. One monitor process only (`logs/monitor.lock`). Without `KALSHI_MONITOR_TICKER`, the process can restart at quarter-hour boundaries; set `KALSHI_MONITOR_NO_RESTART=true` to disable.
-
-## Examples
-
-```bash
-# Dry run Kalshi order
-KALSHI_BOT_DRY_RUN=true npm run kalshi-single-order
-
-# Kalshi YES @ 50¢, 2 contracts
-KALSHI_BOT_SIDE=yes KALSHI_BOT_PRICE_CENTS=50 KALSHI_BOT_CONTRACTS=2 npm run kalshi-single-order
-
-# Polymarket DOWN @ 0.45, size 10
-npm run poly-single-order 0.45 10
+```env
+POLYMARKET_PRIVATE_KEY=0x...64 hex...
+POLYMARKET_PROXY_WALLET_ADDRESS=0x...40 hex...
+ENTRY_THRESHOLD=0.15
+EXIT_THRESHOLD=0.45
+MAX_TRADES_PER_RUN=5
+MIN_HOURS_TO_RESOLUTION=2
+LOCATIONS="nyc,chicago,miami,dallas,seattle,atlanta"
 ```
 
-## Programmatic API
+All runtime configuration is read from `.env` (not `config.json`).  
+On startup the bot validates that `POLYMARKET_PRIVATE_KEY` and `POLYMARKET_PROXY_WALLET_ADDRESS` are present and look like valid EVM strings; if not, it prints an error and exits.
 
-- **Kalshi:** `placeOrder(ticker, side, count, priceCents, options?)` from `./kalshi/bot`.
-- **Polymarket:** `placePolymarketOrder(tokenId, price, size, options?)` from `./polymarket/order`. Token IDs: `getTokenIdsForSlugCached(slug)` from `./polymarket/prices`.
+### Build
 
-## Stack
+```bash
+npm run build
+```
 
-Node/TypeScript, [kalshi-typescript](https://www.npmjs.com/package/kalshi-typescript), [@polymarket/clob-client](https://www.npmjs.com/package/@polymarket/clob-client), ethers, [polymarket-validator](https://www.npmjs.com/package/polymarket-validator).
+### Usage
 
-## Docs
+```bash
+# paper mode — shows signals, no trades
+node dist/index.js
 
-[Kalshi API](https://docs.kalshi.com/) · [TypeScript SDK](https://docs.kalshi.com/sdks/typescript/quickstart) · [WebSockets](https://docs.kalshi.com/websockets/websocket-connection)
+# simulate trades with $1,000 balance
+node dist/index.js --live
+
+# run every 30 minutes
+node dist/index.js --live --interval 30
+
+# reset balance back to $1,000
+node dist/index.js --reset
+
+# show open positions and PnL
+node dist/index.js --positions
+```
+
+You can also run the live bot and dashboard server together:
+
+```bash
+npm run dev-live-dashboard
+```
+
+This starts `ts-node src/index.ts --live --interval 1` and `http-server . -p 8000` in parallel, and the dashboard at `sim_dashboard_repost.html` reads from `simulation.json` in this folder.
+
+### Paid version
+
+There is a **paid edition** of this bot that adds more advanced, production‑grade features for serious weather trading on Polymarket, including:
+
+- Enhanced Kelly sizing and risk controls  
+- Extended market coverage and smarter filtering  
+- Deeper analytics and monitoring for live trading  
+
+If you are interested in the paid version, please reach out via the contact links provided with the project.
