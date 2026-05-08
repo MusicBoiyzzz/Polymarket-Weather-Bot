@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import dotenv from "dotenv";
 import yargs from "yargs";
-import logger from "changelog-utils-structured-logger";
 import { hideBin } from "yargs/helpers";
 import { BotConfig, loadConfig } from "./config";
 import { resetSim } from "./simState";
@@ -43,7 +42,7 @@ function validateKeys(cfg: BotConfig): void {
   }
 
   if (errors.length) {
-    logger.error("\nConfiguration error:\n- " + errors.join("\n- "));
+    console.error("\nConfiguration error:\n- " + errors.join("\n- "));
     process.exit(1);
   }
 }
